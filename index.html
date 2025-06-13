@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Join Our Mighty Mailing List</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(to bottom right, #f9fafb, #e0f7fa);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 2em;
+      margin-bottom: 0.5em;
+    }
+
+    p {
+      margin-bottom: 1em;
+      color: #555;
+    }
+
+    input[type="email"] {
+      padding: 10px;
+      font-size: 1em;
+      width: 250px;
+      max-width: 80%;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      margin-bottom: 1em;
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 1em;
+      background-color: #0077cc;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #005fa3;
+    }
+
+    .confirmation {
+      color: green;
+      margin-top: 1em;
+    }
+  </style>
+</head>
+<body>
+  <h1>Join our Mighty Mailing List</h1>
+  <p>Sign up for news, exclusive discounts and more..!</p>
+  <input type="email" id="email" placeholder="Enter your email">
+  <br>
+  <button onclick="submitEmail()">Sign Up</button>
+  <div class="confirmation" id="confirmation"></div>
+
+  <script>
+    const emails = [];
+    let clickCount = 0;
+    let clickTimer;
+
+    function submitEmail() {
+      const emailInput = document.getElementById('email');
+      const email = emailInput.value.trim();
+
+      if (email && validateEmail(email)) {
+        emails.push(email);
+        document.getElementById('confirmation').textContent = "Thanks for signing up!";
+        emailInput.value = '';
+      } else {
+        alert("Please enter a valid email address.");
+      }
+    }
+
+    function validateEmail(email) {
+      const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      return re.test(email);
+    }
+
+    function downloadCSV() {
+      const csvContent = "data:text/csv;charset=utf-8," + emails.join("\n");
+      const encodedUri = encodeURI(csvContent);
+      const link = document.createElement("a");
+      link.setAttribute("href", encodedUri);
+      link.setAttribute("download", "emails.csv");
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+
+    document.body.addEventListener("click", () => {
+      clickCount++;
+      clearTimeout(clickTimer);
+      clickTimer = setTimeout(() => {
+        clickCount = 0;
+      }, 1000); // 1 second to register sequence
+
+      if (clickCount === 4) {
+        if (emails.length > 0) {
+          downloadCSV();
+        } else {
+          alert("No emails to export.");
+        }
+        clickCount = 0;
+      }
+    });
+  </script>
+</body>
+</html>
